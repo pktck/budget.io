@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form method="post" action="/1/users/create/">
+	{% csrf_token %}
+	<table>
+		<tr>
+			<td><b>Create user</b></td>
+		</tr>
+		<tr>
+			<td>Username:</td>
+			<td><input type="text" name="username" /></td>
+		</tr>
+		<tr>
+			<td>Password:</td>
+			<td><input type="password" name="password" /></td>
+		</tr>
+		<tr>
+			<td>First name:</td>
+			<td><input type="text" name="first_name" /></td>
+		</tr>
+		<tr>
+			<td>Last name:</td>
+			<td><input type="text" name="last_name" /></td>
+		</tr>
+		<tr>
+			<td>Email:</td>
+			<td><input type="text" name="email" /></td>
+		</tr>
+	</table>
+
+	<input type="submit" value="create" />
+</form>
+
+{% endblock %}
