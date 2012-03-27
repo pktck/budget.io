@@ -7,12 +7,22 @@ class Transaction(models.Model):
     place = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=19, decimal_places=2) 
     date = models.DateField()
-    paid_by = models.ForeignKey(User, related_name='paid_by')
-    entered_by = models.ForeignKey(User, related_name='entered_by')
+    paid_by = models.ForeignKey(User, related_name='paid_by_set')
+    entered_by = models.ForeignKey(User, related_name='entered_by_set')
     account = models.ForeignKey('Account')
 
+    def __str__(self):
+        return '%s (%s - $%s)' % (self.items, self.place, self.amount)
+
     def serialize(self):
-        properties = ('id', 'items', 'place', 'amount', 'date', 'paid_by', 'account')
+        properties = (
+                'id',
+                'items',
+                'place',
+                'amount',
+                'date',
+                'paid_by',
+                'account')
         props_dict =  dict([(prop, self.__getattribute__(prop))
             for prop in properties])
         props_dict['paid_by'] = str(props_dict['paid_by'])
@@ -29,3 +39,15 @@ class Account(models.Model):
 
     def __str__(self):
         return self.name
+
+    def serialize(self):
+        properties = (
+                'id', 
+                'name',
+                'account_type',
+                'budget')
+        props_dict =  dict([(prop, self.__getattribute__(prop))
+            for prop in properties])
+        props_dict['budget'] = float(props_dict['budget'])
+        return props_dict
+

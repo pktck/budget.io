@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+	td {
+		background-color: #ddd;
+		padding: 0px 5px;
+	}
+	td.right-align {
+		text-align: right;
+	}
+	th {
+		text-align: left;
+	}
+</style>
+
+<b>Total buy-in:</b> ${{ total_buy_in|floatformat:2 }}
+<br />
+<b>Buy-in per person:</b> ${{ buy_in_per_user|floatformat:2 }}
+<br />
+<br />
+
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Amount spent</th>
+		<th>Amount due</th>
+	</tr>
+
+	{% for entry in entries %}
+	<tr>
+		<td>{{ entry.user.first_name }} {{ entry.user.last_name }}</td>
+		<td class="right-align">${{ entry.buy_in_amount|floatformat:2 }}</td>
+		<td class="right-align">${{ entry.amount_due|floatformat:2 }}</td>
+	</tr>
+	{% endfor %}
+</table>
+
+<br />
+
+<hr />
+
+<h1>Purchases</h1>
+
+{% for entry in entries %}
+<h2>{{ entry.user.first_name }} {{ entry.user.last_name }}</h2>
+<table>
+	<tr>
+		<th>Items</th>
+		<th>Place</th>
+		<th>Amount</th>
+		<th>Date</th>
+	</tr>
+	{% for transaction in entry.transactions %}
+	<tr>
+		<td>{{ transaction.items }}</td>
+		<td>{{ transaction.place }}</td>
+		<td class="right-align">${{ transaction.amount|floatformat:2 }}</td>
+		<td class="right-align">{{ transaction.date }}</td>
+	</tr>
+	{% endfor %}
+</table>
+<br />
+<hr />
+{% endfor %}
+{% endblock %}
+

@@ -5,7 +5,6 @@ from helpers import render_to_json, jsonResponse
 from django.forms.models import modelformset_factory
 from django.template import RequestContext
 from models import Transaction
-import json
 
 @login_required
 @render_to_json
@@ -23,9 +22,9 @@ def create(req):
     if req.method == 'POST':
         formset = TransactionFormSet(req.POST)
         if formset.is_valid():
-            transaction = formset.save()
+            transactions = formset.save()
             # do something.
-            return jsonResponse(transaction[0].serialize())
+            return jsonResponse([transaction.serialize() for transaction in transactions])
     else:
         formset = TransactionFormSet(queryset=Transaction.objects.none())
     return render_to_response("transaction.html",
@@ -33,12 +32,24 @@ def create(req):
             context_instance=RequestContext(req))
 
 @login_required
-@render_to_json
-def update(req, user_id):
-    pass
+def update(req):
+    TransactionFormSet = modelformset_factory(Transaction)
+    if req.method == 'POST':
+        formset = TransactionFormSet(req.POST)
+        if formset.is_valid():
+            transaction = formset.save()
+            # do something.
+            return jsonResponse(transaction[0].serialize())
+    else:
+        formset = TransactionFormSet()
+    return render_to_response("transaction.html",
+            {"formset": formset},
+            context_instance=RequestContext(req))
+
 
 @login_required
 @render_to_json
-def delete(req, user_id):
-    pass
+def delete(req, transaction_id):
+    Transaction.objects.get(id=transaction_id).delete()
+    return {'success': True}
 

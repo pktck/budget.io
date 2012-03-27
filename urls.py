@@ -7,7 +7,7 @@ from django.conf.urls.defaults import patterns, include, url
 urlpatterns = patterns('',
         # Examples:
         # url(r'^$', 'budget_io.views.home', name='home'),
-        url(r'^$', 'budget_io.www.views.views.front'),
+        url(r'^$', 'budget_io.www.views.front'),
 
         url(r'^accounts/login/',
             'django.contrib.auth.views.login',
@@ -31,8 +31,21 @@ urlpatterns = patterns('',
         url(r'^1/transactions/create/',
             'budget_io.www.transactions.create'),
 
+        url(r'^1/transactions/update/',
+            'budget_io.www.transactions.update'),
+
         url(r'^1/transactions/delete/(?P<transaction_id>[^/]+)$',
             'budget_io.www.transactions.delete'),
+
+        # accounts
+        url(r'^1/accounts/get/(?P<account_id>[^/]+)?$',
+            'budget_io.www.accounts.get'),
+
+        url(r'^1/accounts/create/',
+            'budget_io.www.accounts.create'),
+
+        url(r'^1/accounts/delete/(?P<account_id>[^/]+)$',
+            'budget_io.www.accounts.delete'),
 
         # url(r'^budget_io/', include('budget_io.foo.urls')),
 

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form method="post" action="/1/accounts/create/">
+	{% csrf_token %}
+	<table>
+		{{ formset }}
+	</table>
+	<input type="submit" />
+</form>
+
+<script>
+	document.getElementById('id_form-0-name').focus();
+</script>
+
+{% endblock %}
