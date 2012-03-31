@@ -13,8 +13,13 @@ def get(req, transaction_id):
         transaction = Transaction.objects.get(id=transaction_id)
         return transaction.serialize()
     else:
-        return [transaction.serialize() 
-                for transaction in Transaction.objects.all()]
+        if req.GET.has_key('filter_attribute') and req.GET.has_key('filter_value'):
+            filter_args = {req.GET['filter_attribute']: req.GET['filter_value']}
+            transactions = Transaction.objects.filter(**filter_args)
+        else:
+            transactions = Transaction.objects.all()
+            
+        return [transaction.serialize() for transaction in transactions]
 
 @login_required
 def create(req):
@@ -24,7 +29,8 @@ def create(req):
         if formset.is_valid():
             transactions = formset.save()
             # do something.
-            return jsonResponse([transaction.serialize() for transaction in transactions])
+            return jsonResponse([transaction.serialize()
+                for transaction in transactions])
     else:
         formset = TransactionFormSet(queryset=Transaction.objects.none())
     return render_to_response("transaction.html",

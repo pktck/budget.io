@@ -25,8 +25,10 @@ class Transaction(models.Model):
                 'account')
         props_dict =  dict([(prop, self.__getattribute__(prop))
             for prop in properties])
-        props_dict['paid_by'] = str(props_dict['paid_by'])
-        props_dict['account'] = str(props_dict['account'])
+        props_dict['paid_by_username'] = props_dict['paid_by'].username
+        props_dict['paid_by'] = props_dict['paid_by'].id
+        props_dict['account_name'] = props_dict['account'].name
+        props_dict['account'] = props_dict['account'].id
         props_dict['amount'] = float(props_dict['amount'])
         props_dict['date'] = props_dict['date'].ctime()
         return props_dict
