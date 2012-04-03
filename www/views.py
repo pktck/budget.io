@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from models import Account, Transaction
 
 @login_required
-def front(req):
+def buyInReport(req):
     entries = []
     buy_in_account = Account.objects.get(name='Buy-in')
     users = User.objects.all()
@@ -29,7 +29,6 @@ def front(req):
 
     return render_to_response('buy-in-report.html', locals())
 
-
-
-
-
+@login_required
+def front(req):
+    return HttpResponse(open('/home/pktck/budget_io/www/static/html/front.html'))

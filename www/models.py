@@ -10,6 +10,7 @@ class Transaction(models.Model):
     paid_by = models.ForeignKey(User, related_name='paid_by_set')
     entered_by = models.ForeignKey(User, related_name='entered_by_set')
     account = models.ForeignKey('Account')
+    comments = models.TextField()
 
     def __str__(self):
         return '%s (%s - $%s)' % (self.items, self.place, self.amount)
@@ -38,6 +39,7 @@ class Account(models.Model):
     name = models.CharField(max_length=255)
     account_type = models.CharField(max_length=255)
     budget = models.DecimalField(max_digits=19, decimal_places=2)
+    comments = models.TextField()
 
     def __str__(self):
         return self.name

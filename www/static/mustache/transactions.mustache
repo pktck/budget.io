@@ -1,0 +1,20 @@
+<table>
+	<th>
+		<td>ITEMS</td>
+		<td>PLACE</td>
+		<td>AMOUNT</td>
+		<td>DATE</td>
+		<td>PAID BY</td>
+		<td>ACCOUNT</td>
+	</th>
+	{{ #transactions }}
+	<tr>
+		<td><input type="text" value="{{ items }}"   class="items"   /></td>
+		<td><input type="text" value="{{ place }}"   class="place"   /></td>
+		<td><input type="text" value="{{ amount }}"  class="amount"  /></td>
+		<td><input type="text" value="{{ date }}"    class="date"    /></td>
+		<td><input type="text" value="{{ paid_by }}" class="paid_by" /></td>
+		<td><input type="text" value="{{ account }}" class="account" /></td>
+	</tr>
+	{{ /#transactions }}
+</table>
