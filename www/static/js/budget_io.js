@@ -17,7 +17,11 @@ BudgetIO._replaceContentsWithTemplate = function(selector, template, view) {
     $(selector).html(html);
 }
 
-BudgetIO.loadTemplate = function(selector, template_url, view_url, is_append) {
+// View function is passed a callback function which it should call with the
+// view data.
+BudgetIO.loadTemplate = function(
+        selector, template_url, viewFunction, is_append) {
+
     is_append = is_append || false;
 
     var request_id = BudgetIO._request_counter++;
@@ -26,19 +30,20 @@ BudgetIO.loadTemplate = function(selector, template_url, view_url, is_append) {
 
     BudgetIO._render_queue[request_id]['selector'] = selector;
 
-    $.ajax(view_url, {
-       'success': function(data) {
-          BudgetIO._render_queue[request_id]['view'] = data;
-          BudgetIO._renderFromQueue(request_id, is_append);
-       }
+    $.ajax(template_url, {
+        'success': function(data) {
+            BudgetIO._render_queue[request_id]['template'] = data;
+            BudgetIO._renderFromQueue(request_id, is_append);
+        }
     }); 
 
-    $.ajax(template_url, {
-       'success': function(data) {
-          BudgetIO._render_queue[request_id]['template'] = data;
-          BudgetIO._renderFromQueue(request_id, is_append);
-       }
-    }); 
+    var viewFunctionCallback = function(view_data) {
+        BudgetIO._render_queue[request_id]['view'] = view_data;
+        BudgetIO._renderFromQueue(request_id, is_append);
+    };
+
+    viewFunction(viewFunctionCallback);
+
 }
 
 BudgetIO._renderFromQueue = function(request_id, is_append) {
@@ -53,8 +58,16 @@ BudgetIO._renderFromQueue = function(request_id, is_append) {
                 render_item['view']);
 
         // free up some memory
-        delete BudgetIO._render_queue[request_id];
+        //delete BudgetIO._render_queue[request_id];
     }
+}
+
+BudgetIO.getTransactionsView = function(callback) {
+    $.ajax('/1/transactions/get/', {
+        'success': function(data) {
+            callback({'transactions': data});
+        },
+    });
 }
 
 exports.BudgetIO = BudgetIO;
