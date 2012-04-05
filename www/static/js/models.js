@@ -1,45 +1,82 @@
 ;(function(exports) {
 
-function Transaction(
-    id, items, place, amount, date, paid_by, entered_by, account, comments) {
-
-    this.id = id;
-    this.items = items;
-    this.place = place;
-    this.amount = amount;
-    this.date = date;
-    this.paid_by = paid_by;
-    this.entered_by = entered_by;
-    this.account = account;
+/*****************************************************************************/
+// Accepts an object and assigns all the objects properties to itsself
+function GenericModel(attributes) {
+    for(var key in attributes) {
+        this[key] = attributes[key];
+    }
 }
 
-Transaction.getTransactions = function() {
-    return [new Transaction(), new Transaction()];
+GenericModel._url = 'replace_with_object_url';
+
+// Make a call to the object's get API with params
+// Pass a list of objects to callback
+GenericModel.get = function(callback, params) {
+    var thisClass = this;
+    $.ajax(this._url + 'get/', {
+        data: params,
+        success: function(data) {
+            // the response will be in JSON -- a list of the objects
+            var objects = data.map(function(attributes) {
+                return new thisClass(attributes);
+            });
+            callback(objects);
+        },
+    });
 }
 
-
-function Account(id, name, account_type, budget, comments) {
-    this.id = id;
-    this.name = name;
-    this.account_type = account_type;
-    this.budget = budget;
-    this.comments = comments;
+GenericModel.printUrl = function() {
+    console.log(this._url);
 }
 
-Account.getAccounts = function() {
-    return [new Account(), new Account];
+/*****************************************************************************/
+
+function Transaction(attributes) {
+    // Attributes:
+    // id, items, place, amount, date, paid_by, entered_by, account, comments
+    GenericModel.call(this, attributes);
+ }
+
+Transaction.prototype = new GenericModel();
+Transaction.prototype.constructor = Transaction;
+
+Transaction._url = '/1/transactions/';
+Transaction.get = GenericModel.get;
+
+
+/*****************************************************************************/
+
+function Account(attributes) {
+    // Attributes:
+    // id, name, account_type, budget, comments
+    GenericModel.call(this, attributes);
 }
 
+Account.prototype = new GenericModel();
+Account.prototype.constructor = Account;
 
-function User(id, username, first_name, last_name) {
-    this.id = id;
-    this.username = username;
-    this.first_name = first_name;
-    this.last_name = last_name;
-}
+Account._url = '/1/accounts/';
+Account.get = GenericModel.get;
 
-User.getUsers = function() {
-    return [new User(), new User()];
-}
+/*****************************************************************************/
 
-})(this);
+function User(attributes) {
+    // Attributes:
+    // id, username, first_name, last_name
+    GenericModel.call(this, attributes);
+ }
+
+User.prototype = new GenericModel();
+User.prototype.constructor = User;
+
+User._url = '/1/users/';
+User.get = GenericModel.get;
+
+/*****************************************************************************/
+
+exports.Transaction = Transaction;
+exports.Account = Account;
+exports.User = User;
+
+})(BudgetIO);
