@@ -1,45 +1,59 @@
 ;(function(exports) {
 
 function GenericView() {
-    this._template_url = '';
-    this._model = new Object();
-    this._models = [];
-    this._template = '';
-    
-    this._fetchTemplate();
+    // Define this._template_url in subclasses
+    //this._template_url = '';
 }
 
-GenericView.prototype._fetchTemplate = function() {
+GenericView.prototype.replaceContents = function(selector) {
+    var this_object = this;
+    this._getTemplate(function(template) {
+        this_object._replaceContentsPart2(selector, template);
+    });
+}
+
+// callback is called with the template passed to it
+GenericView.prototype._getTemplate = function(callback) {
     $.ajax(this._template_url, {
         success: function(data) {
-                     this._template = data;
+                     callback(data);
                  },
     });
 }
 
+// override in sublcasses
 GenericView.prototype._generateView = function() {
-    var view = {}; // generate view from this._models
+    var view = {}; // generate view from models
     return view;
 }
 
-GenericView.prototype.populateModels = function() {
+GenericView.prototype._replaceContentsPart2 = function(selector, template) {
 
-}
-
-GenericView.prototype.replaceContents = function(selector) {
     var view = this._generateView();
 
-    $(selector).html($.mustache(this._template, view));
+    $(selector).html($.mustache(template, view));
 }
 
+/*****************************************************************************/
 
+function TransactionView(transactions, accounts, users) {
+    this.transactions = transactions;
+    this.users = users;
+    this.accounts = accounts;
 
-function PageView() {
-    this.accounts = [];
-    this.users = [];
-    this.transactions = [];
+    this._template_url = '/static/mustache/transactions.mustache';
+
+    GenericView.call(this);
 }
 
-exports.PageView = PageView;
+TransactionView.prototype = new GenericView();
+TransactionView.constructor = TransactionView;
+
+TransactionView.prototype._generateView = function() {
+    var view = {'transactions': this.transactions};
+    return view;
+}
+
+exports.TransactionView = TransactionView;
 
 })(BudgetIO);

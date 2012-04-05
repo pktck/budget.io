@@ -26,10 +26,6 @@ GenericModel.get = function(callback, params) {
     });
 }
 
-GenericModel.printUrl = function() {
-    console.log(this._url);
-}
-
 /*****************************************************************************/
 
 function Transaction(attributes) {
