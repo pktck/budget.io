@@ -5,6 +5,9 @@ from django.template import RequestContext
 from helpers import render_to_json
 from django.contrib.auth.models import User
 from models import Account, Transaction
+from collections import defaultdict
+import pprint
+from decimal import Decimal
 
 @login_required
 def buyInReport(req):
@@ -28,6 +31,67 @@ def buyInReport(req):
         entry['amount_due'] = buy_in_per_user - entry['buy_in_amount']
 
     return render_to_response('buy-in-report.html', locals())
+
+@login_required
+def monthlyReport(req):
+    # {<month> : {
+    #             "users" : {
+    #                        <user1> : {
+    #                                   "transactions": [<<transactions>>],
+    #                                   "sum": <sum>
+    #                                  },
+    #                        <user2> : {
+    #                                   "transactions": [<<transactions>>],
+    #                                   "sum": <sum>
+    #                                  },
+    #                        ...,
+    #                      }
+    #             "accounts" : {
+    #                           <account1> : {
+    #                                      "transactions": [<<transactions>>],
+    #                                      "sum": <sum>
+    #                                     },
+    #                           <account2> : {
+    #                                      "transactions": [<<transactions>>],
+    #                                      "sum": <sum>
+    #                                     },
+    #                           ...,
+    #                          }
+    #           },
+    #  ...,
+    # }    
+
+    transactions_by_month = defaultdict(lambda: {'users':    defaultdict(lambda: {'sum': Decimal(0), 'transactions': []}),
+        'accounts': defaultdict(lambda: {'sum': Decimal(0), 'transactions': []}),
+        })
+    #transactions_by_month = defaultdict(lambda: {'users':    defaultdict(lambda: {'sum': Decimal(0)}),
+        #'accounts': defaultdict(lambda: {'sum': Decimal(0)}),
+        #})
+
+    buy_in_account = Account.objects.get(name='Buy-in')
+
+    transactions = Transaction.objects.exclude(account=buy_in_account)
+    for transaction in transactions:
+        month = transaction.date.replace(day=1)
+        month_dict = transactions_by_month[month]
+        month_dict['users'][transaction.paid_by]['transactions'].append(transaction)
+        month_dict['users'][transaction.paid_by]['sum'] += transaction.amount
+        month_dict['accounts'][transaction.account]['transactions'].append(transaction)
+        month_dict['accounts'][transaction.account]['sum'] += transaction.amount
+
+    
+    return HttpResponse(pprint.pformat(defaultdictToDict(transactions_by_month)), mimetype='text/plain')
+
+def defaultdictToDict(d):
+    if type(d) == defaultdict:
+        return defaultdictToDict(dict(d))
+    elif type(d) == dict:
+        return dict([(defaultdictToDict(key), defaultdictToDict(value)) for key, value in d.items()])
+    elif type(d) in (list, tuple):
+        return map(defaultdictToDict, d)
+    else:
+        return d
+                
 
 @login_required
 def front(req):

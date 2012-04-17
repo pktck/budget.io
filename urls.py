@@ -15,6 +15,9 @@ urlpatterns = patterns('',
         url(r'^buy-in-report$',
             'budget_io.www.views.buyInReport'),
 
+        url(r'^monthly-report$',
+            'budget_io.www.views.monthlyReport'),
+
         url(r'^accounts/login/',
             'django.contrib.auth.views.login',
             {'template_name': 'login.html'}),

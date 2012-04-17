@@ -1,6 +1,8 @@
 from functools import wraps
 from django.http import HttpResponse
 from django.utils import simplejson as json
+import datetime
+from collections import defaultdict
 
 def render_to_json(f):
     @wraps(f)
@@ -27,4 +29,15 @@ def serializeUser(user):
             'first_name': user.first_name,
             'last_name': user.last_name,
             }
+
+#def datetimeToCtime(d):
+    #if type(d) in (dict, defaultdict):
+        #return dict([(datetimeToCtime(key), datetimeToCtime(value)) for key, value in d.items()])
+    #elif type(d) in (list, tuple):
+        #map(datetimeToCtime, d)
+    #elif type(d) in (datetime.date, datetime.datetime):
+        #return d.ctime()
+    #else:
+        #return d
+
 
