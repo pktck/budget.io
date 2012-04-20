@@ -1,7 +1,19 @@
 # Django settings for budget_io project.
 
+from django.template.base import TemplateSyntaxError
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+TEMPLATE_STRING_IF_INVALID = ''
+
+class InvalidString(str):
+    def __mod__(self, other):
+        raise TemplateSyntaxError(
+                "Undefined variable or unknown value for: \"%s\"" % other)
+
+if TEMPLATE_DEBUG:
+    TEMPLATE_STRING_IF_INVALID = InvalidString("%s")
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),

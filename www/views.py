@@ -8,6 +8,7 @@ from models import Account, Transaction
 from collections import defaultdict
 import pprint
 from decimal import Decimal
+import operator
 
 @login_required
 def buyInReport(req):
@@ -61,26 +62,38 @@ def monthlyReport(req):
     #  ...,
     # }    
 
-    transactions_by_month = defaultdict(lambda: {'users':    defaultdict(lambda: {'sum': Decimal(0), 'transactions': []}),
+    transactions_by_month = defaultdict(lambda: {
+        'users':    defaultdict(lambda: {'sum': Decimal(0), 'transactions': []}),
         'accounts': defaultdict(lambda: {'sum': Decimal(0), 'transactions': []}),
+        'sum': Decimal(0),
         })
-    #transactions_by_month = defaultdict(lambda: {'users':    defaultdict(lambda: {'sum': Decimal(0)}),
-        #'accounts': defaultdict(lambda: {'sum': Decimal(0)}),
-        #})
+    
+    overall_sum = Decimal(0)
 
     buy_in_account = Account.objects.get(name='Buy-in')
 
     transactions = Transaction.objects.exclude(account=buy_in_account)
+    transactions = transactions.order_by('date')
     for transaction in transactions:
         month = transaction.date.replace(day=1)
         month_dict = transactions_by_month[month]
+        month_dict['sum'] += transaction.amount
         month_dict['users'][transaction.paid_by]['transactions'].append(transaction)
         month_dict['users'][transaction.paid_by]['sum'] += transaction.amount
         month_dict['accounts'][transaction.account]['transactions'].append(transaction)
         month_dict['accounts'][transaction.account]['sum'] += transaction.amount
 
+    transactions_by_month = defaultdictToDict(transactions_by_month)
+
+    # convert transactions_by_month to a list and sort by month
+    transactions_by_month = [{'month': key, 'data': value} for key, value in transactions_by_month.items()]
+    transactions_by_month.sort(key=operator.itemgetter('month'))
     
-    return HttpResponse(pprint.pformat(defaultdictToDict(transactions_by_month)), mimetype='text/plain')
+
+    if req.GET['debug'] == 'true':
+        return HttpResponse(pprint.pformat(defaultdictToDict(transactions_by_month)), mimetype='text/plain')
+    else:
+        return render_to_response('monthly-report.html', locals())
 
 def defaultdictToDict(d):
     if type(d) == defaultdict:

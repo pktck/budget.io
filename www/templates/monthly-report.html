@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+	table {
+		width: 800px;
+		margin-bottom: 50px;
+	}
+	td {
+		background-color: #ddd;
+		padding: 0px 5px;
+	}
+	td.right-align {
+		text-align: right;
+	}
+	th {
+		text-align: left;
+	}
+	h1, h2 {
+		color: black;
+	}
+	h4 {
+		color: #55a;
+		margin-bottom: 5px;
+	}
+	body {
+		color: #333;
+	}
+</style>
+
+
+
+{% for month_transactions in transactions_by_month %}
+	<h2>{{ month_transactions.month|date:"F Y" }} (${{ month_transactions.data.sum|floatformat:2 }})</h2>
+
+	<!--<h3>Accounts</h3>-->
+
+	{% for account, data in month_transactions.data.accounts.items %}
+		<h4>{{ account.name }} (${{ data.sum|floatformat:2 }})</h4>
+
+		<table>
+			<tr>
+				<th>Items</th>
+				<th>Place</th>
+				<th>Amount</th>
+				<th>Date</th>
+				<th>Paid By</th>
+			</tr>
+			{% for transaction in data.transactions %}
+				<tr>
+					<td>{{ transaction.items }}</td>
+					<td>{{ transaction.place }}</td>
+					<td class="right-align">${{ transaction.amount|floatformat:2 }}</td>
+					<td class="right-align">{{ transaction.date }}</td>
+					<td>{{ transaction.paid_by.first_name }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+
+	{% endfor %}
+
+	<hr />
+<!--
+	<h3>People</h3>
+
+	{% for user, data in month_transactions.data.users.items %}
+		<h4>{{ user.get_full_name }} (${{ data.sum|floatformat:2 }})</h4>
+
+		<table>
+			<tr>
+				<th>Items</th>
+				<th>Place</th>
+				<th>Amount</th>
+				<th>Date</th>
+				<th>Account</th>
+			</tr>
+			{% for transaction in data.transactions %}
+				<tr>
+					<td>{{ transaction.items }}</td>
+					<td>{{ transaction.place }}</td>
+					<td class="right-align">${{ transaction.amount|floatformat:2 }}</td>
+					<td class="right-align">{{ transaction.date }}</td>
+					<td>{{ transaction.account }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+
+	{% endfor %}
+-->
+{% endfor %}
+
+{% endblock content %}

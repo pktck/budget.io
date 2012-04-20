@@ -44,8 +44,7 @@ PageController.prototype.updateTransactions = function() {
 
 PageController.prototype._updateTransactionsPart2 = function() {
     var transaction_view = new BudgetIO.TransactionView(
-            this.transactions, this.accounts, this.users
-            );
+            this.transactions, this.accounts, this.users);
     transaction_view.replaceContents('div');
 }
 
