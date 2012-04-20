@@ -7,9 +7,11 @@ class Transaction(models.Model):
     place = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=19, decimal_places=2) 
     date = models.DateField()
-    paid_by = models.ForeignKey(User, related_name='paid_by_set')
-    entered_by = models.ForeignKey(User, related_name='entered_by_set')
-    account = models.ForeignKey('Account')
+    #paid_by = models.ForeignKey(User, related_name='paid_by_set')
+    paid_by = models.ForeignKey('Account', related_name='paid_by_set')
+    #entered_by = models.ForeignKey(User, related_name='entered_by_set')
+    entered_by = models.ForeignKey(User)
+    account = models.ForeignKey('Account', related_name='account_set')
     comments = models.TextField()
 
     def __str__(self):
@@ -26,7 +28,7 @@ class Transaction(models.Model):
                 'account')
         props_dict =  dict([(prop, self.__getattribute__(prop))
             for prop in properties])
-        props_dict['paid_by_username'] = props_dict['paid_by'].username
+        #props_dict['paid_by_username'] = props_dict['paid_by'].username
         props_dict['paid_by'] = props_dict['paid_by'].id
         props_dict['account_name'] = props_dict['account'].name
         props_dict['account'] = props_dict['account'].id

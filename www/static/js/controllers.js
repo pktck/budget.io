@@ -39,13 +39,28 @@ PageController.prototype._loadModels = function(callback) {
 
 PageController.prototype.updateTransactions = function() {
     var this_object = this;
-    this._loadModels(function() {this_object._updateTransactionsPart2();});
+    this._loadModels(function() {
+        var transaction_view = new BudgetIO.TransactionsView(
+                this_object.transactions,
+                this_object.accounts,
+                this_object.users);
+        transaction_view.replaceContents('div#transactions');
+    });
 }
 
-PageController.prototype._updateTransactionsPart2 = function() {
-    var transaction_view = new BudgetIO.TransactionView(
-            this.transactions, this.accounts, this.users);
-    transaction_view.replaceContents('div');
+PageController.prototype.updateAccounts = function() {
+    var this_object = this;
+    this._loadModels(function() {
+        var accounts_view = new BudgetIO.AccountsView(
+                this_object.transactions,
+                this_object.accounts);
+        accounts_view.replaceContents('div#accounts');
+    });
+}
+
+PageController.prototype.init = function() {
+    this.updateTransactions();
+    this.updateAccounts();
 }
 
 exports.PageController = PageController;

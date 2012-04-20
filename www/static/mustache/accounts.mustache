@@ -1,0 +1,29 @@
+<table>
+	<tr>
+		<td>My History</td><td>{{my_sum}}</td>
+	</tr>
+	<tr>
+		<th colspan="2">Outgoing</th>
+	</tr>
+	{{#outgoing}}	
+		<tr>
+			<td>{{name}}</td><td>${{balance}}</td>
+		</tr>
+	{{/outgoing}}
+	<tr>
+		<th colspan="2">Incoming</th>
+	</tr>
+	{{#incoming}}	
+		<tr>
+			<td>{{name}}</td><td>${{balance}}</td>
+		</tr>
+	{{/incoming}}
+	<tr>
+		<th colspan="2">Holding</th>
+	</tr>
+	{{#holding}}	
+		<tr>
+			<td>{{name}}</td><td>${{balance}}</td>
+		</tr>
+	{{/holding}}
+</table>

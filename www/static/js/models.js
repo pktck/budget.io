@@ -38,6 +38,10 @@ GenericModel.getById = function(id, id_field) {
     return return_val ? return_val[0] : null;
 }
 
+GenericModel.filterBy = function(field, value) {
+    return this.objects.filter(function(el) { return el[field] == value });
+}
+
 /*****************************************************************************/
 
 function Transaction(attributes) {
@@ -46,15 +50,27 @@ function Transaction(attributes) {
     GenericModel.call(this, attributes);
 
     this.__defineGetter__('paid_by_obj', function() {
-        return BudgetIO.User.getById(this.paid_by);
+        return Account.getById(this.paid_by);
     });
 
     this.__defineGetter__('account_obj', function() {
-        return BudgetIO.Account.getById(this.account);
+        return Account.getById(this.account);
     });
 
-    this.__defineGetter__('amount_string', function() {
+    this.__defineGetter__('amount_str', function() {
         return this.amount.toFixed(2);
+    });
+
+    this.__defineGetter__('date_obj', function() {
+        return new Date(this.date);
+    });
+
+    this.__defineGetter__('date_str', function() {
+        var month = this.date_obj.getUTCMonth() + 1;
+        var day = this.date_obj.getUTCDate();
+        var year = this.date_obj.getUTCFullYear();
+
+        return month + '/' + day + '/' + year;
     });
 }
 
@@ -65,7 +81,7 @@ Transaction._url = '/1/transactions/';
 GenericModel.objects = []; // gets populated by get()
 Transaction.get = GenericModel.get;
 Transaction.getById = GenericModel.getById;
-
+Transaction.filterBy = GenericModel.filterBy;
 
 /*****************************************************************************/
 
@@ -73,6 +89,23 @@ function Account(attributes) {
     // Attributes:
     // id, name, account_type, budget, comments
     GenericModel.call(this, attributes);
+
+    this.__defineGetter__('balance', function() {
+        if(this.account_type == 'outgoing')
+            var transactions = Transaction.filterBy('account_obj', this);
+        else if(this.account_type == 'incoming')
+            var transactions = Transaction.filterBy('paid_by_obj', this);
+        else if(this.account_type == 'holding')
+            var transactions = null; // TODO: something
+        
+        if(transactions)
+            var balance = transactions.reduce(function(a, b) { return a + b.amount; }, 0)
+        else
+            var balance = 0;
+
+        balance = balance.toFixed(2);
+        return balance;
+    });
 }
 
 Account.prototype = new GenericModel();
@@ -82,6 +115,7 @@ Account._url = '/1/accounts/';
 GenericModel.objects = []; // gets populated by get()
 Account.get = GenericModel.get;
 Account.getById = GenericModel.getById;
+Account.filterBy = GenericModel.filterBy;
 
 /*****************************************************************************/
 
@@ -97,6 +131,7 @@ User.prototype.constructor = User;
 User._url = '/1/users/';
 GenericModel.objects = []; // gets populated by get()
 User.get = GenericModel.get;
+User.filterBy = GenericModel.filterBy;
 
 // the id field for users is user_id, so we have to wrap the generic call
 User.getById = function(id) {
