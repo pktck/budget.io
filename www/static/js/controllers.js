@@ -19,7 +19,13 @@ PageController.prototype._loadModels = function(callback) {
         if(--request_counter === 0) {
             callback();
         }
+    });
 
+ BudgetIO.PaymentRequest.get(function(payment_requests) {
+        this_object.payment_requests = payment_requests;
+        if(--request_counter === 0) {
+            callback();
+        }
     });
 
     BudgetIO.Account.get(function(accounts) {

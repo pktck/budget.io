@@ -23,7 +23,7 @@ GenericModel.get = function(callback, params) {
                 return new thisClass(attributes);
             });
             thisClass.objects = objects;
-            callback(objects);
+            callback && callback(objects);
         },
     });
 }
@@ -85,25 +85,88 @@ Transaction.filterBy = GenericModel.filterBy;
 
 /*****************************************************************************/
 
+function PaymentRequest(attributes) {
+    // Attributes:
+    // id, items, place, amount, date, paid_by, entered_by, account, comments
+    GenericModel.call(this, attributes);
+
+    this.__defineGetter__('paid_by_obj', function() {
+        return Account.getById(this.paid_by);
+    });
+
+    this.__defineGetter__('to_account_obj', function() {
+        return Account.getById(this.to_account);
+    });
+
+    this.__defineGetter__('amount_str', function() {
+        return this.amount.toFixed(2);
+    });
+
+    this.__defineGetter__('request_date_obj', function() {
+        return new Date(this.request_date);
+    });
+
+    this.__defineGetter__('request_date_str', function() {
+        var month = this.request_date_obj.getUTCMonth() + 1;
+        var day = this.request_date_obj.getUTCDate();
+        var year = this.request_date_obj.getUTCFullYear();
+
+        return month + '/' + day + '/' + year;
+    });
+}
+
+PaymentRequest.prototype = new GenericModel();
+PaymentRequest.prototype.constructor = PaymentRequest;
+
+PaymentRequest._url = '/1/payment_requests/';
+GenericModel.objects = []; // gets populated by get()
+PaymentRequest.get = GenericModel.get;
+PaymentRequest.getById = GenericModel.getById;
+PaymentRequest.filterBy = GenericModel.filterBy;
+
+/*****************************************************************************/
+
 function Account(attributes) {
     // Attributes:
     // id, name, account_type, budget, comments
     GenericModel.call(this, attributes);
 
-    this.__defineGetter__('balance', function() {
-        if(this.account_type == 'outgoing')
-            var transactions = Transaction.filterBy('account_obj', this);
-        else if(this.account_type == 'incoming')
+    this.__defineGetter__('debits', function() {
+        if(this.account_type == 'holding')
             var transactions = Transaction.filterBy('paid_by_obj', this);
-        else if(this.account_type == 'holding')
-            var transactions = null; // TODO: something
-        
-        if(transactions)
-            var balance = transactions.reduce(function(a, b) { return a + b.amount; }, 0)
         else
-            var balance = 0;
+            var transactions = Transaction.filterBy('account_obj', this);
+
+        return sumTransactions(transactions)
+    });
+
+    this.__defineGetter__('credits', function() {
+        if(this.account_type == 'holding')
+            var transactions = Transaction.filterBy('account_obj', this);
+        else
+            var transactions = Transaction.filterBy('paid_by_obj', this);
+
+        return sumTransactions(transactions)
+    });
+
+    this.__defineGetter__('payment_requests', function() {
+        var transactions = PaymentRequest.filterBy('paid_by_obj', this);
+
+        return sumTransactions(transactions)
+    });
+
+    this.__defineGetter__('balance', function() {
+        //var credits_sum = sumTransactions(this.credits);
+        //var debits_sum = sumTransactions(this.debits);
+        //var payment_requests_sum = sumTransactions(this.payment_requests);
+
+        //var balance = credits_sum - debits_sum - payment_requests_sum;
+
+        var balance = this.credits - this.debits - this.payment_requests;
 
         balance = balance.toFixed(2);
+
+        //return "credits: " + credits_sum.toFixed(2) + " debits: " + debits_sum.toFixed(2) + " payment requests: " + payment_requests_sum + " sum: " + balance;
         return balance;
     });
 }
@@ -123,7 +186,7 @@ function User(attributes) {
     // Attributes:
     // id, username, first_name, last_name
     GenericModel.call(this, attributes);
- }
+}
 
 User.prototype = new GenericModel();
 User.prototype.constructor = User;
@@ -139,8 +202,21 @@ User.getById = function(id) {
 };
 
 /*****************************************************************************/
+// helper functions
+
+function sumTransactions(transactions) {
+    var sum = function(a, b) { return a + b.amount };
+
+    if(transactions)
+        return transactions.reduce(sum, 0);
+    else
+        return 0;
+}
+
+/*****************************************************************************/
 
 exports.Transaction = Transaction;
+exports.PaymentRequest = PaymentRequest;
 exports.Account = Account;
 exports.User = User;
 

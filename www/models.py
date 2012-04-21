@@ -57,3 +57,34 @@ class Account(models.Model):
         props_dict['budget'] = float(props_dict['budget'])
         return props_dict
 
+
+class PaymentRequest(models.Model):
+    paid_by = models.ForeignKey('Account', related_name='paid_by_request_set')
+    to_account = models.ForeignKey('Account', related_name='to_account_set')
+    amount = models.DecimalField(max_digits=19, decimal_places=2) 
+    request_date = models.DateField()
+    entered_by = models.ForeignKey(User)
+    comments = models.TextField()
+
+    def __str__(self):
+        return '%s -> %s (%s) %s' % (
+                paid_by, to_account, amount, request_date)
+
+    def serialize(self):
+        properties = (
+                'id', 
+                'paid_by',
+                'to_account',
+                'amount',
+                'request_date',
+                'comments')
+        props_dict =  dict([(prop, self.__getattribute__(prop))
+            for prop in properties])
+        props_dict['paid_by_name'] = props_dict['paid_by'].name
+        props_dict['paid_by'] = props_dict['paid_by'].id
+        props_dict['to_account_name'] = props_dict['to_account'].name
+        props_dict['to_account'] = props_dict['to_account'].id
+        props_dict['amount'] = float(props_dict['amount'])
+        props_dict['request_date'] = props_dict['request_date'].ctime()
+        return props_dict
+

@@ -23,7 +23,6 @@ urlpatterns = patterns('',
             {'template_name': 'login.html'}),
 
         # users
-
         url(r'^1/users/get/(?P<user_id>[^/]+)?$',
             'budget_io.www.users.get'),
 
@@ -55,6 +54,16 @@ urlpatterns = patterns('',
 
         url(r'^1/accounts/delete/(?P<account_id>[^/]+)$',
             'budget_io.www.accounts.delete'),
+
+        # payment_requests
+        url(r'^1/payment_requests/get/(?P<payment_request_id>[^/]+)?$',
+            'budget_io.www.payment_requests.get'),
+
+        url(r'^1/payment_requests/create/',
+            'budget_io.www.payment_requests.create'),
+
+        url(r'^1/payment_requests/delete/(?P<payment_request_id>[^/]+)$',
+            'budget_io.www.payment_requests.delete'),
 
         # url(r'^budget_io/', include('budget_io.foo.urls')),
 
