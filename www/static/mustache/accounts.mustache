@@ -1,29 +1,25 @@
-<table>
-	<tr>
-		<td>My History</td><td>{{my_sum}}</td>
-	</tr>
-	<tr>
-		<th colspan="2">Outgoing</th>
-	</tr>
-	{{#outgoing}}	
-		<tr>
-			<td>{{name}}</td><td>${{balance}}</td>
-		</tr>
-	{{/outgoing}}
-	<tr>
-		<th colspan="2">Incoming</th>
-	</tr>
-	{{#incoming}}	
-		<tr>
-			<td>{{name}}</td><td>${{balance}}</td>
-		</tr>
-	{{/incoming}}
-	<tr>
-		<th colspan="2">Holding</th>
-	</tr>
-	{{#holding}}	
-		<tr>
-			<td>{{name}}</td><td>${{balance}}</td>
-		</tr>
-	{{/holding}}
-</table>
+<!--<div class="account">
+	<span class="name">My History</span>
+	<span class="balance">{{my_sum}}</span>
+</div>-->
+<h3>Outgoing</h3>
+{{#outgoing}}	
+<div class="account">
+	<span class="name">{{name}}</span>
+	<span class="balance">${{balance}}</span>
+</div>
+{{/outgoing}}
+<h3>Incoming</h3>
+{{#incoming}}	
+<div class="account">
+	<span class="name">{{name}}</span>
+	<span class="balance">${{balance}}</span>
+</div>
+{{/incoming}}
+<h3>Holding</h3>
+{{#holding}}	
+<div class="account">
+	<span class="name">{{name}}</span>
+	<span class="balance">${{balance}}</span>
+</div>
+{{/holding}}

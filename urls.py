@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import patterns, include, url
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+#from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 
 # Uncomment the next two lines to enable the admin:
@@ -65,6 +65,11 @@ urlpatterns = patterns('',
         url(r'^1/payment_requests/delete/(?P<payment_request_id>[^/]+)$',
             'budget_io.www.payment_requests.delete'),
 
+        #url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
+        url(r'^static/(?P<path>.*)$', 'budget_io.www.helpers.betterStatic', {
+            'document_root': '/home/pktck/budget_io/www/static/',
+                }),
+
         # url(r'^budget_io/', include('budget_io.foo.urls')),
 
         # Uncomment the admin/doc line below to enable admin documentation:
@@ -74,4 +79,4 @@ urlpatterns = patterns('',
         # url(r'^admin/', include(admin.site.urls)),
         )
 
-urlpatterns += staticfiles_urlpatterns()
+#urlpatterns += staticfiles_urlpatterns()

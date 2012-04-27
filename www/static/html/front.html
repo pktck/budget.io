@@ -7,11 +7,12 @@
 		<script type="application/javascript" src="/static/js/models.js"></script>
 		<script type="application/javascript" src="/static/js/controllers.js"></script>
 		<script type="application/javascript" src="/static/js/views.js"></script>
+		<link href="/static/css/main.css" rel="stylesheet" type="text/css">
 	</head>
-	<body onload="page_controller = new BudgetIO.PageController(); page_controller.init();" style="font-family: sans-serif;">
+	<body onload="BudgetIO.init()">
+		<div id="top-bar"></div>
+		<div id="control-bar"></div>
 		<div id="accounts"></div>
-		<div id="transactions" style="font-family: sans-serif; font-size: 20px; text-align: center; margin-top: 200px;">
-			Loading <span style="color: green;">budget.io</span>...
-		</div>
+		<div id="transactions"></div>
 	</body>
 </html>

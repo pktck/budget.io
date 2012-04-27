@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.utils import simplejson as json
 import datetime
 from collections import defaultdict
+import os
 
 def render_to_json(f):
     @wraps(f)
@@ -29,6 +30,14 @@ def serializeUser(user):
             'first_name': user.first_name,
             'last_name': user.last_name,
             }
+
+def betterStatic(req, path, document_root):
+    filename = os.path.join(document_root, path)
+    fp = open(filename)
+    print filename
+    response = HttpResponse(fp)
+    #response['Cache-Control'] = 'no-cache'
+    return response
 
 #def datetimeToCtime(d):
     #if type(d) in (dict, defaultdict):

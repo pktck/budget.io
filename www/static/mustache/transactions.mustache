@@ -1,20 +1,18 @@
-<table>
-	<tr>
-		<th>ITEMS</th>
-		<th>PLACE</th>
-		<th>AMOUNT</th>
-		<th>DATE</th>
-		<th>PAID BY</th>
-		<th>ACCOUNT</th>
-	</tr>
-	{{#transactions}}
-	<tr>
-		<td><input type="text" value="{{items}}"   class="items"   /></td>
-		<td><input type="text" value="{{place}}"   class="place"   /></td>
-		<td><input type="text" value="{{amount_str}}"  class="amount"  /></td>
-		<td><input type="text" value="{{date_str}}"    class="date"    /></td>
-		<td><input type="text" value="{{paid_by_obj.name}}" class="paid_by" /></td>
-		<td><input type="text" value="{{account_obj.name}}" class="account" /></td>
-	</tr>
-	{{/transactions}}
-</table>
+<div class="header">
+	<span>ITEMS</span>
+	<span>PLACE</span>
+	<span>AMOUNT</span>
+	<span>DATE</span>
+	<span>PAID BY</span>
+	<span>ACCOUNT</span>
+</div>
+{{#transactions}}
+<div class="transaction">
+	<input type="text" value="{{items}}" class="item" />
+	<input type="text" value="{{place}}" class="place" />
+	$<input type="text" value="{{amount_str}}" class="amount" />
+	<input type="text" value="{{date_str}}" class="date" />
+	<input type="text" value="{{paid_by_obj.name}}" class="paid-by" />
+	<input type="text" value="{{account_obj.name}}" class="account" />
+</div>
+{{/transactions}}
