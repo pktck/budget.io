@@ -13,16 +13,24 @@ div#control-bar {
 	background-color: #ddd;
 }
 
+table#main {
+	padding: 10px;
+}
+
 div#accounts {
-	float: left;
 	font-size: 14px;
-	/*width: 20%;*/
+}
+
+td {
+	vertical-align: top;
+}
+
+td.accounts {
+	width: 225px;
 }
 
 div#transactions {
-	float: left;
 	font-size: 14px;
-	width: 80%;
 }
 
 div#accounts > div.account > span.name {
@@ -31,54 +39,56 @@ div#accounts > div.account > span.name {
 }
 
 div#accounts > h3 {
-	margin: 10px 0px;
+	margin: 0;
+	margin-bottom: 10px;
 }
 
-div#transactions > div.transaction > input {
+table {
+	width: 100%;
+}
+
+th {
+	text-align: left;
+	padding-left: 5px;
+}
+
+input {
 	border: none;
 	margin: 0px;
-	padding: 3px 0px;
-	font-size: 13px;
-	width: 140px;
-}
-
-div#transactions > div.transaction > input.item {
-	width: 47%;
-}
-
-div#transactions > div.transaction > input.place {
-	width: 10%;
-}
-
-div#transactions > div.transaction > input.amount {
-	width: 10%;
-}
-
-div#transactions > div.transaction > input.date {
-	width: 10%;
-}
-
-div#transactions > div.transaction > input.paid-by {
-	width: 10%;
-}
-
-div#transactions > div.transaction > input.account {
-	width: 10%;
-}
-
-div#transactions > div.header > span {
-	width: 143px;
-	display: inline-block;
-}
-
-div#transactions > div.header {
-	font-size: 14px;
 	padding: 3px 5px;
-	color: #555;
+	font-size: 13px;
+	width: 100%;
 }
 
-div#transactions > div.transaction {
-	border-top: 1px solid #ccc;
-	padding: 0px 5px;
+input.amount, input.date {
+	text-align: right;
 }
 
+td {
+	padding: 0;
+	margin: 0;
+}
+
+td.items {
+	min-width: 175px;
+}
+
+td.place {
+	width: 175px;
+}
+
+td.amount {
+	width: 80px;
+}
+
+td.date {
+	width: 100px;
+}
+
+td.paid-by {
+	width: 125px;
+}
+
+td.account {
+	width: 150px;
+}

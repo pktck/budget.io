@@ -42,7 +42,10 @@ TransactionsView.prototype = new GenericView();
 TransactionsView.constructor = TransactionsView;
 
 TransactionsView.prototype._generateView = function() {
-    var view = {'transactions': this.transactions};
+    var sorted_transactions = this.transactions.sort(function(a, b) {
+        return a.date_obj - b.date_obj;
+    });
+    var view = {'transactions': sorted_transactions};
     return view;
 }
 
