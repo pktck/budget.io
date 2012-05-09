@@ -18,6 +18,7 @@ def get(req, transaction_id):
             transactions = Transaction.objects.filter(**filter_args)
         else:
             transactions = Transaction.objects.all()
+            #transactions = transactions.filter(date__month=4)
             
         return [transaction.serialize() for transaction in transactions]
 

@@ -13,8 +13,34 @@ div#control-bar {
 	background-color: #ddd;
 }
 
+div#control-bar > span#date {
+	color: #555;
+	font-size: 16px;
+	padding-right: 5px;
+	display: inline-block;
+}
+
+div#control-bar > span#logo {
+	color: green;
+	font-size: 24px;
+	display: inline-block;
+	margin-top: 12px;
+	margin-left: 10px;
+	font-family: "Papyrus";
+	width: 230px;
+}
+
+div#control-bar > div.date-control {
+	display: inline-block;
+	border: 1px solid #aaa;
+	background-color: #eee;
+	color: #555;
+	padding: 0 3px;
+	cursor: pointer;
+}
+
 table#main {
-	padding: 10px;
+	padding: 20px 10px 0 10px;
 }
 
 div#accounts {

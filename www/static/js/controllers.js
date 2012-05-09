@@ -1,5 +1,11 @@
 ;(function(exports) {
 
+function AccountsController() {
+}
+
+
+/*****************************************************************************/
+
 function PageController() {
     this.transactions = [];
     this.accounts = [];
