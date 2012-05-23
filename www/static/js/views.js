@@ -1,23 +1,12 @@
 ;(function(exports) {
 
 function GenericView() {
-    // Define this._template_url in subclasses
-    //this._template_url = '';
 }
 
-GenericView.prototype.replaceContents = function(selector) {
-    var this_object = this;
-    this._getTemplate(function(template) {
-        var view = this_object._generateView();
-        $(selector).html($.mustache(template, view));
-    });
-}
-
-// callback is called with the template passed to it
-GenericView.prototype._getTemplate = function(callback) {
-    $.ajax(this._template_url, {
-        success: callback,
-    });
+GenericView.prototype.replaceContents = function() {
+	var view = this._generateView();
+	var rendered_html = $.mustache(this._template, view);
+	$(this._selector).html(rendered_html);
 }
 
 // override in sublcasses
@@ -28,12 +17,12 @@ GenericView.prototype._generateView = function() {
 
 /*****************************************************************************/
 
-function TransactionsView(transactions, accounts, users) {
-    this.transactions = transactions;
-    this.users = users;
-    this.accounts = accounts;
+function TransactionsView(selector, transactions) {
+	this._selector = selector;
+    this._transactions = transactions;
 
     this._template_url = '/static/mustache/transactions.mustache';
+	this._template = APP_CONTROLLER.templates[this._template_url];
 
     GenericView.call(this);
 }
@@ -42,7 +31,7 @@ TransactionsView.prototype = new GenericView();
 TransactionsView.constructor = TransactionsView;
 
 TransactionsView.prototype._generateView = function() {
-    var sorted_transactions = this.transactions.sort(function(a, b) {
+    var sorted_transactions = this._transactions.sort(function(a, b) {
         return a.date_obj - b.date_obj;
     });
     var view = {'transactions': sorted_transactions};
@@ -51,11 +40,12 @@ TransactionsView.prototype._generateView = function() {
 
 /*****************************************************************************/
 
-function AccountsView(transactions, accounts) {
-    this.transactions = transactions;
-    this.accounts = accounts;
+function AccountsView(selector, accounts) {
+	this._selector = selector;
+    this._accounts = accounts;
 
     this._template_url = '/static/mustache/accounts.mustache';
+	this._template = APP_CONTROLLER.templates[this._template_url];
 
     GenericView.call(this);
 }
@@ -66,9 +56,9 @@ AccountsView.constructor = AccountsView;
 AccountsView.prototype._generateView = function() {
     var view = {
         'my_sum': 326.47,
-        'outgoing': this.accounts.filter(function(el) { return el.account_type == 'outgoing' }),
-        'incoming': this.accounts.filter(function(el) { return el.account_type == 'incoming' }),
-        'holding': this.accounts.filter(function(el) { return el.account_type == 'holding' }),
+        'outgoing': this._accounts.filter(function(el) { return el.account_type == 'outgoing' }),
+        'incoming': this._accounts.filter(function(el) { return el.account_type == 'incoming' }),
+        'holding' : this._accounts.filter(function(el) { return el.account_type == 'holding'  }),
     };
     return view;
 }
@@ -78,4 +68,4 @@ AccountsView.prototype._generateView = function() {
 exports.TransactionsView = TransactionsView;
 exports.AccountsView = AccountsView;
 
-})(BudgetIO);
+})(AppController);

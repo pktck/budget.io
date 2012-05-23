@@ -13,17 +13,17 @@ GenericModel.objects = []; // gets populated by get()
 
 // Make a call to the object's get API with params
 // Pass a list of objects to callback
-GenericModel.get = function(callback, params) {
-    var thisClass = this;
+GenericModel.get = function(params) {
+    var this_class = this;
     $.ajax(this._url + 'get/', {
         data: params,
         success: function(data) {
             // the response will be in JSON -- a list of the objects
             var objects = data.map(function(attributes) {
-                return new thisClass(attributes);
+                return new this_class(attributes);
             });
-            thisClass.objects = objects;
-            callback && callback(objects);
+            this_class.objects = objects;
+			$(document).trigger('IOmodelUpdated');
         },
     });
 }
@@ -220,4 +220,4 @@ exports.PaymentRequest = PaymentRequest;
 exports.Account = Account;
 exports.User = User;
 
-})(BudgetIO);
+})(AppController);
