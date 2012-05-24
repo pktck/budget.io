@@ -1,17 +1,16 @@
 ;(function(exports) {
 
 function PageController() {
-	console.log('page controller inited');
-	$(document).bind('IOmodelUpdated', function() {console.log('meep?')});
 	$(document).bind('IOmodelUpdated', this.updateTransactions);
 	$(document).bind('IOmodelUpdated', this.updateAccounts);
+	this.updateTransactions();
+	this.updateAccounts();
 }
 
 PageController.prototype.updateTransactions = function() {
-	console.log('triggered!');
 	var transaction_view = new AppController.TransactionsView(
 		'#transactions',
-		this.transactions);
+		AppController.Transaction.objects);
 
 	transaction_view.replaceContents();
 }
@@ -19,7 +18,7 @@ PageController.prototype.updateTransactions = function() {
 PageController.prototype.updateAccounts = function() {
 	var accounts_view = new AppController.AccountsView(
 		'#accounts',
-		this.accounts);
+		AppController.Account.objects);
 
 	accounts_view.replaceContents();
 }

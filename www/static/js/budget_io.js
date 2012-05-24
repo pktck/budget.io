@@ -38,6 +38,7 @@ AppController.prototype.loadModels = function() {
 	AppController.Transaction.get();
 	AppController.Account.get();
 	AppController.User.get();
+	AppController.PaymentRequest.get();
 }
 
 AppController.prototype.initPage = function() {
@@ -54,7 +55,6 @@ AppController.prototype.isTemplatesLoaded = function() {
 			return false;
 		}
 	}
-
 	return true;
 }
 
