@@ -8,8 +8,8 @@ function AppController() {
 	this.templates = {};
 	this.page_controller = null;
 
-	this.loadModels();
 	this.loadTemplates();
+	this.loadModels();
 }
 
 AppController.prototype.loadTemplates = function() {
@@ -21,15 +21,15 @@ AppController.prototype.loadTemplates = function() {
 		// Using a wrapper function so the inner handler can bind to the
 		// current template_url in the for loop.
 		// (See http://www.mennovanslooten.nl/blog/post/62)
-		var successHandler = function(template_url) {
+		var successHandler = (function(template_url) {
 			return function(data) {
 				this_obj.templates[template_url] = data;
 				this_obj.initPage();
 			};
-		};
+		})(template_url);
 
 		$.ajax(template_url, {
-			success: successHandler(template_url),
+			success: successHandler,
 		});
 	}
 }

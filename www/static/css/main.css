@@ -13,24 +13,24 @@ div#control-bar {
 	background-color: #ddd;
 }
 
-div#control-bar > span#date {
+div#control-bar span#date {
 	color: #555;
 	font-size: 16px;
-	padding-right: 5px;
 	display: inline-block;
+	margin-left: 5px;
 }
 
-div#control-bar > span#logo {
+div#control-bar span#logo {
 	color: green;
 	font-size: 24px;
 	display: inline-block;
 	margin-top: 12px;
 	margin-left: 10px;
 	font-family: "Papyrus";
-	width: 230px;
+	width: 185px;
 }
 
-div#control-bar > div.date-control {
+div#control-bar div.date-control {
 	display: inline-block;
 	border: 1px solid #aaa;
 	background-color: #eee;
@@ -47,7 +47,7 @@ div#accounts {
 	font-size: 14px;
 }
 
-div#accounts > div.account-group {
+div#accounts div.account-group {
 	margin-bottom: 10px;
 }
 
@@ -63,12 +63,12 @@ div#transactions {
 	font-size: 14px;
 }
 
-div#accounts > div.account > span.name {
+div#accounts div.account span.name {
 	display: inline-block;
 	width: 135px;
 }
 
-div#accounts > h3 {
+div#accounts h3 {
 	margin: 0;
 	margin-bottom: 10px;
 }
@@ -90,7 +90,7 @@ input {
 	width: 100%;
 }
 
-input.amount, input.date {
+input.amount {
 	text-align: right;
 }
 
