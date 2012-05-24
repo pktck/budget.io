@@ -2,24 +2,30 @@
 	<span class="name">My History</span>
 	<span class="balance">{{my_sum}}</span>
 </div>-->
-<h3>Outgoing</h3>
-{{#outgoing}}	
-<div class="account">
-	<span class="name">{{name}}</span>
-	<span class="balance">${{balance}}</span>
+<div class="account-group">
+	<h3>Outgoing</h3>
+	{{#outgoing}}	
+	<div class="account">
+		<span class="name">{{name}}</span>
+		<span class="balance">${{balance}}</span>
+	</div>
+	{{/outgoing}}
 </div>
-{{/outgoing}}
 <h3>Incoming</h3>
-{{#incoming}}	
-<div class="account">
-	<span class="name">{{name}}</span>
-	<span class="balance">${{balance}}</span>
+<div class="account-group">
+	{{#incoming}}	
+	<div class="account">
+		<span class="name">{{name}}</span>
+		<span class="balance">${{balance}}</span>
+	</div>
+	{{/incoming}}
 </div>
-{{/incoming}}
 <h3>Holding</h3>
-{{#holding}}	
-<div class="account">
-	<span class="name">{{name}}</span>
-	<span class="balance">${{balance}}</span>
+<div class="account-group">
+	{{#holding}}	
+	<div class="account">
+		<span class="name">{{name}}</span>
+		<span class="balance">${{balance}}</span>
+	</div>
+	{{/holding}}
 </div>
-{{/holding}}

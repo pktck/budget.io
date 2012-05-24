@@ -47,6 +47,10 @@ div#accounts {
 	font-size: 14px;
 }
 
+div#accounts > div.account-group {
+	margin-bottom: 10px;
+}
+
 td {
 	vertical-align: top;
 }
