@@ -13,17 +13,17 @@ GenericModel.objects = []; // gets populated by get()
 
 // Make a call to the object's get API with params
 // Pass a list of objects to callback
-GenericModel.get = function(callback, params) {
-    var thisClass = this;
+GenericModel.get = function(params) {
+    var this_class = this;
     $.ajax(this._url + 'get/', {
         data: params,
         success: function(data) {
             // the response will be in JSON -- a list of the objects
             var objects = data.map(function(attributes) {
-                return new thisClass(attributes);
+                return new this_class(attributes);
             });
-            thisClass.objects = objects;
-            callback && callback(objects);
+            this_class.objects = objects;
+			$(document).trigger('IOmodelUpdated');
         },
     });
 }
@@ -78,10 +78,17 @@ Transaction.prototype = new GenericModel();
 Transaction.prototype.constructor = Transaction;
 
 Transaction._url = '/1/transactions/';
-GenericModel.objects = []; // gets populated by get()
+Transaction.objects = []; // gets populated by get()
 Transaction.get = GenericModel.get;
 Transaction.getById = GenericModel.getById;
 Transaction.filterBy = GenericModel.filterBy;
+
+Transaction.filterByDateRange = function(start_date, end_date) {
+	return this.objects.filter(function(el) {
+		return (el.date_obj >= start_date) && (el.date_obj < end_date);
+	});
+}
+
 
 /*****************************************************************************/
 
@@ -119,7 +126,7 @@ PaymentRequest.prototype = new GenericModel();
 PaymentRequest.prototype.constructor = PaymentRequest;
 
 PaymentRequest._url = '/1/payment_requests/';
-GenericModel.objects = []; // gets populated by get()
+PaymentRequest.objects = []; // gets populated by get()
 PaymentRequest.get = GenericModel.get;
 PaymentRequest.getById = GenericModel.getById;
 PaymentRequest.filterBy = GenericModel.filterBy;
@@ -175,7 +182,7 @@ Account.prototype = new GenericModel();
 Account.prototype.constructor = Account;
 
 Account._url = '/1/accounts/';
-GenericModel.objects = []; // gets populated by get()
+Account.objects = []; // gets populated by get()
 Account.get = GenericModel.get;
 Account.getById = GenericModel.getById;
 Account.filterBy = GenericModel.filterBy;
@@ -192,7 +199,7 @@ User.prototype = new GenericModel();
 User.prototype.constructor = User;
 
 User._url = '/1/users/';
-GenericModel.objects = []; // gets populated by get()
+User.objects = []; // gets populated by get()
 User.get = GenericModel.get;
 User.filterBy = GenericModel.filterBy;
 
@@ -220,4 +227,4 @@ exports.PaymentRequest = PaymentRequest;
 exports.Account = Account;
 exports.User = User;
 
-})(BudgetIO);
+})(AppController);

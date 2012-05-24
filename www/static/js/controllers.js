@@ -1,80 +1,84 @@
 ;(function(exports) {
 
-function AccountsController() {
-}
-
-
-/*****************************************************************************/
-
 function PageController() {
-    this.transactions = [];
-    this.accounts = [];
-    this.users = [];
-}
+	var now = new Date();
+	this._filter_date_start = new Date(now.getFullYear(), now.getMonth());
 
-PageController.prototype._loadModels = function(callback) {
-    this.transactions = [];
-    this.accounts = [];
-    this.users = [];
+	this.__defineGetter__('_filter_date_end', function() {
+		var filter_date_end = new Date(this._filter_date_start);
+		filter_date_end.setMonth(this._filter_date_start.getMonth() + 1);
+		filter_date_end.setMilliseconds(-1);
+		return filter_date_end;	   
+	});
 
-    var this_object = this;
-    var request_counter = 3;
+	var this_obj = this;
 
-    BudgetIO.Transaction.get(function(transactions) {
-        this_object.transactions = transactions;
-        if(--request_counter === 0) {
-            callback();
-        }
-    });
+	$(document).bind('IOmodelUpdated', function() {this_obj.updateTransactions()});
+	$(document).bind('IOmodelUpdated', function() {this_obj.updateAccounts()});
 
- BudgetIO.PaymentRequest.get(function(payment_requests) {
-        this_object.payment_requests = payment_requests;
-        if(--request_counter === 0) {
-            callback();
-        }
-    });
+	$('#date-control-increment').click(function(){this_obj.incrementMonth()});
+	$('#date-control-decrement').click(function(){this_obj.decrementMonth()});
 
-    BudgetIO.Account.get(function(accounts) {
-        this_object.accounts = accounts;
-        if(--request_counter === 0) {
-            callback();
-        }
-    });
-
-    BudgetIO.User.get(function(users) {
-        this_object.users = users;
-        if(--request_counter === 0) {
-            callback();
-        }
-    });
+	this.updateTransactions();
+	this.updateAccounts();
 }
 
 PageController.prototype.updateTransactions = function() {
-    var this_object = this;
-    this._loadModels(function() {
-        var transaction_view = new BudgetIO.TransactionsView(
-                this_object.transactions,
-                this_object.accounts,
-                this_object.users);
-        transaction_view.replaceContents('div#transactions');
-    });
+	var transactions = AppController.Transaction.filterByDateRange(
+		this._filter_date_start,
+		this._filter_date_end);
+
+	var transaction_view = new AppController.TransactionsView(
+		'#transactions',
+		transactions);
+
+	transaction_view.replaceContents();
+
+	var months = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December'];
+
+	var month = months[this._filter_date_start.getMonth()];
+	$('#date').text(month + ' ' + this._filter_date_start.getFullYear());
 }
 
 PageController.prototype.updateAccounts = function() {
-    var this_object = this;
-    this._loadModels(function() {
-        var accounts_view = new BudgetIO.AccountsView(
-                this_object.transactions,
-                this_object.accounts);
-        accounts_view.replaceContents('div#accounts');
-    });
+	var accounts_view = new AppController.AccountsView(
+		'#accounts',
+		AppController.Account.objects);
+
+	accounts_view.replaceContents();
 }
 
-PageController.prototype.init = function() {
-    this.updateTransactions();
-    this.updateAccounts();
+PageController.prototype.incrementMonth = function() {
+	this. _filter_date_start = new Date(
+			this._filter_date_start.getFullYear(),
+			this._filter_date_start.getMonth() + 1);
+
+	this.updateTransactions();
+	this.updateAccounts();
 }
+	
+PageController.prototype.decrementMonth = function() {
+	this. _filter_date_start = new Date(
+			this._filter_date_start.getFullYear(),
+			this._filter_date_start.getMonth() - 1);
+
+	this.updateTransactions();
+	this.updateAccounts();
+}
+	
 
 exports.PageController = PageController;
 
-})(BudgetIO);
+})(AppController);
